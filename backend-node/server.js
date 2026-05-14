@@ -32,6 +32,6 @@ app.post("/predict", upload.single("file"), async (req, res) => {
   }
 });
 
-app.listen(5000, () => {
-  console.log("🚀 Node server running on http://localhost:5000");
+app.listen(5001, () => {
+  console.log("🚀 Node server running on http://localhost:5001");
 });

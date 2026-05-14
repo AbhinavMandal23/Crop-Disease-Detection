@@ -1,10 +1,13 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS 
 import tensorflow as tf
 import numpy as np
 from PIL import Image
 import json
+import time
 
 app = Flask(__name__)
+CORS(app)
 
 # -------------------------
 # PATHS
@@ -39,6 +42,7 @@ def preprocess(img):
 # -------------------------
 @app.route("/predict", methods=["POST"])
 def predict():
+    start = time.perf_counter()
     try:
         file = request.files["file"]
         img = Image.open(file).convert("RGB")
@@ -68,7 +72,10 @@ def predict():
         # healthy handling
         if "healthy" in disease_name.lower():
             disease_name = "Healthy Leaf"
-
+            
+        end=time.perf_counter()
+        latency=(end - start )*1000
+        print(f"API Latency: {latency:.2f} ms")
         return jsonify({
             "status": "success",
             "disease": disease_name,
@@ -76,6 +83,7 @@ def predict():
         })
 
     except Exception as e:
+        
         return jsonify({
             "status": "error",
             "message": str(e)
